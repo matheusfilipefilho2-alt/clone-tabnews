@@ -24,8 +24,6 @@ async function status(request, response) {
   //"SELECT count(*)::int FROM pg_stat_activity WHERE datname = ''; SELECT pg_sleep(4); --';"
 
   const databaseOpenedConnectionsValue = databaseOpenedConnectionsResult.rows[0].count;
-
-  console.log(databaseOpenedConnectionsValue)
   
   response.status(200).json({
     updated_at: updatedAt,
