@@ -1,14 +1,14 @@
 import migrationRunner from "node-pg-migrate";
 import { join } from "node:path";
-import database from "infra/database.js"
+import database from "infra/database.js";
 
 export default async function migrations(request, response) {
   const dbClient = await database.getNewClient();
-  const defaultMigrationOptions = {
 
+  const defaultMigrationOptions = {
     dbClient: dbClient,
     // dryRun : faz um falso teste
-    dryRun: false,
+    dryRun: true,
     // dir: escolhe o diretorio
     dir: join("infra", "migrations"), // dir = diretorio
     // direction: escolhe a função da migration
@@ -17,6 +17,7 @@ export default async function migrations(request, response) {
     // migrationsTable: tabela que armazena as migrations executadas
     migrationsTable: "pgmigrations",
   };
+
   if (request.method === "GET") {
     // migrationRunner: executa todas as migrations
     const pendingMigrations = await migrationRunner(defaultMigrationOptions);
