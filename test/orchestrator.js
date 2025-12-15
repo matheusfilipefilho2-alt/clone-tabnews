@@ -19,7 +19,6 @@ async function waitForallServices() {
   }
 }
 
-
 const orchestrator = {
   waitForallServices,
 };
