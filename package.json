@@ -17,8 +17,6 @@
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
     "lint:eslint:check": "eslint .",
-
-
     "prepare": "husky",
     "commit": "cz"
   },
