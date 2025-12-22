@@ -6,7 +6,7 @@ async function status(request, response) {
   const databaseVersionValue = databaseVersionResult.rows[0].server_version;
 
   const databaseMaxConnectionsResult = await database.query(
-    "SHOW max_connections;",
+    "SHOW max_connections;"
   );
   const databaseMaxConnectionsvalue =
     databaseMaxConnectionsResult.rows[0].max_connections;
@@ -16,11 +16,6 @@ async function status(request, response) {
     text: "SELECT count(*)::int FROM pg_stat_activity WHERE datname = $1",
     values: [databaseName],
   });
-  //"SELECT count(*)::int FROM pg_stat_activity WHERE datname = 'local_db';"
-  //"SELECT count(*)::int FROM pg_stat_activity WHERE datname = '';"
-  //"SELECT count(*)::int FROM pg_stat_activity WHERE datname = '';';""
-  //"SELECT count(*)::int FROM pg_stat_activity WHERE datname = ''; SELECT pg_sleep(4);';"
-  //"SELECT count(*)::int FROM pg_stat_activity WHERE datname = ''; SELECT pg_sleep(4); --';"
 
   const databaseOpenedConnectionsValue =
     databaseOpenedConnectionsResult.rows[0].count;
