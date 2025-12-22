@@ -1,7 +1,7 @@
 import retry from "async-retry";
 import database from "infra/database.js";
 
-async function waitForallServices() {
+async function waitForAllServices() {
   await waitForWebServer();
 
   async function waitForWebServer() {
@@ -25,7 +25,7 @@ async function clearDatabase() {
 }
 
 const orchestrator = {
-  waitForallServices,
+  waitForAllServices,
   clearDatabase,
 };
 export default orchestrator;
