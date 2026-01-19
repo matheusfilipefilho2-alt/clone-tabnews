@@ -1,20 +1,27 @@
-import { internalServerError, MethodNotAllowedError } from "infra/errors";
+import {
+  InternalServerError,
+  MethodNotAllowedError,
+  ValidationError,
+  NotFoundError,
+} from "infra/errors.js";
 
 function onNoMatchHandler(request, response) {
-  const publcErrorObject = new MethodNotAllowedError();
-  response.status(publcErrorObject.statusCode).json(publcErrorObject);
+  const publicErrorObject = new MethodNotAllowedError();
+  response.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
 function onErrorHandler(error, request, response) {
-  const publicErrorObject = new internalServerError({
-    statusCode: error.statusCode,
+  if (error instanceof ValidationError || error instanceof NotFoundError) {
+    return response.status(error.statusCode).json(error);
+  }
+
+  const publicErrorObject = new InternalServerError({
     cause: error,
   });
 
-  console.log("\n Erro dentro do catch do next-connect:");
   console.error(publicErrorObject);
 
-  response.status(500).json(publicErrorObject);
+  response.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
 const controller = {

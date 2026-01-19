@@ -9,7 +9,7 @@ const defaultMigrationOptions = {
   dir: resolve("infra", "migrations"), // dir = diretorio
   // direction: escolhe a função da migration
   direction: "up",
-  verbose: true,
+  log: () => {},
   // migrationsTable: tabela que armazena as migrations executadas
   migrationsTable: "pgmigrations",
 };
