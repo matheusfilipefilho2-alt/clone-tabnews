@@ -45,6 +45,7 @@ describe("GET /api/v1/users/username", () => {
       expect(Date.parse(response2Body.created_at)).not.toBeNaN();
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
+
     test("With case mismatch", async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
@@ -81,6 +82,7 @@ describe("GET /api/v1/users/username", () => {
       expect(Date.parse(response2Body.created_at)).not.toBeNaN();
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
+
     test("With nonexistent username", async () => {
       const response = await fetch(
         "http://localhost:3000/api/v1/users/UsuarioInexistente"
