@@ -33,6 +33,37 @@ async function findOneByUsername(username) {
   }
 }
 
+async function findOneByEmail(email) {
+  const userFound = await runSelectQuery(email);
+
+  return userFound;
+
+  async function runSelectQuery(email) {
+    const results = await database.query({
+      text: `
+        SELECT
+          *
+        FROM
+          users
+        WHERE
+          LOWER(email) = LOWER($1)
+        LIMIT
+          1
+        ;`,
+      values: [email],
+    });
+
+    if (results.rowCount === 0) {
+      throw new NotFoundError({
+        message: "O email informado não foi encontrado no sistema.",
+        action: "Verifique se o email está digitado corretamente.",
+      });
+    }
+
+    return results.rows[0];
+  }
+}
+
 async function create(userInputValues) {
   await validateUniqueUsername(userInputValues.username);
   await validateUniqueEmail(userInputValues.email);
@@ -84,17 +115,17 @@ async function update(username, userInputValues) {
   async function runUpdateQuery(userWithNewValues) {
     const results = await database.query({
       text: `
-      UPDATE
-        users
-      SET
-        username = $2,
-        email = $3,
-        password = $4,
-        updated_at = timezone('utc', now())
-      WHERE
-        id = $1
-      RETURNING
-        *  
+        UPDATE
+          users
+        SET
+          username = $2,
+          email = $3,
+          password = $4,
+          updated_at = timezone('utc', now())
+        WHERE
+          id = $1
+        RETURNING
+          *
       `,
       values: [
         userWithNewValues.id,
@@ -132,13 +163,13 @@ async function validateUniqueUsername(username) {
 async function validateUniqueEmail(email) {
   const results = await database.query({
     text: `
-       SELECT
-          email  
-       FROM
-          users
-       WHERE
-         LOWER(email) = LOWER($1)   
-        ;`,
+      SELECT
+        email
+      FROM
+        users
+      WHERE
+        LOWER(email) = LOWER($1)
+      ;`,
     values: [email],
   });
 
@@ -158,6 +189,7 @@ async function hashPasswordInObject(userInputValues) {
 const user = {
   create,
   findOneByUsername,
+  findOneByEmail,
   update,
 };
 

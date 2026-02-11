@@ -9,7 +9,11 @@ router.post(postHandler);
 export default router.handler(controller.errorHandlers);
 
 async function postHandler(request, response) {
-  const userInputValues = request.body;
+  let userInputValues = request.body;
+  if (typeof userInputValues === "string") {
+    userInputValues = JSON.parse(userInputValues);
+  }
+  console.log(userInputValues);
   const newUser = await user.create(userInputValues);
   return response.status(201).json(newUser);
 }
