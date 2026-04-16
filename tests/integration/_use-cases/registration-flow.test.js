@@ -1,4 +1,5 @@
 import orchestrator from "tests/orchestrator.js";
+import activation from "models/activation.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -8,6 +9,7 @@ beforeAll(async () => {
 });
 
 describe("Use case: Registration Flow (all successful)", () => {
+  let createUSerResponseBody;
   test("create user account", async () => {
     const createUSerResponse = await fetch(
       "http://localhost:3000/api/v1/users",
@@ -26,7 +28,7 @@ describe("Use case: Registration Flow (all successful)", () => {
 
     expect(createUSerResponse.status).toBe(201);
 
-    const createUSerResponseBody = await createUSerResponse.json();
+    createUSerResponseBody = await createUSerResponse.json();
 
     expect(createUSerResponseBody).toEqual({
       id: createUSerResponseBody.id,
@@ -40,18 +42,24 @@ describe("Use case: Registration Flow (all successful)", () => {
   });
 
   test("Receive activation email", async () => {
+    const lastEmail = await orchestrator.getLastEmail();
 
+    const activationToken = await activation.findOneByUserId(
+      createUSerResponseBody.id
+    );
+
+    expect(lastEmail.sender).toBe("<contato@tabnews.com.br>");
+    expect(lastEmail.recipients[0]).toBe("<registration.flow@curso.dev>");
+    expect(lastEmail.subject).toBe("Ative seu cadastro no TabNews");
+    expect(lastEmail.text).toContain("RegistrationFlow");
+    expect(lastEmail.text).toContain(activationToken.id);
+
+    console.log(lastEmail.text);
   });
 
-  test("Activate account", async () => {
+  test("Activate account", async () => {});
 
-  });
+  test("Login", async () => {});
 
-  test("Login", async () => {
-
-  });
-
-  test("Get user information", async () => {
-    
-  });
+  test("Get user information", async () => {});
 });
