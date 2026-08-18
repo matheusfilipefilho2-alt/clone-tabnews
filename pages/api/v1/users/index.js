@@ -14,10 +14,9 @@ async function postHandler(request, response) {
   if (typeof userInputValues === "string") {
     userInputValues = JSON.parse(userInputValues);
   }
-  console.log(userInputValues);
   const newUser = await user.create(userInputValues);
 
-  const activationToken = await activation.create(newUser.id)
+  const activationToken = await activation.create(newUser.id);
   await activation.SendEmailToUser(newUser, activationToken);
 
   return response.status(201).json(newUser);

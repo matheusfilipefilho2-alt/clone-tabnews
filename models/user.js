@@ -99,7 +99,7 @@ async function create(userInputValues) {
   await validateUniqueUsername(userInputValues.username);
   await validateUniqueEmail(userInputValues.email);
   await hashPasswordInObject(userInputValues);
-  injectDeafaultFeaturesInObject(userInputValues)
+  injectDeafaultFeaturesInObject(userInputValues);
 
   const newUser = await runInsertQuery(userInputValues);
   return newUser;
@@ -125,7 +125,7 @@ async function create(userInputValues) {
   }
 
   function injectDeafaultFeaturesInObject(userInputValues) {
-    userInputValues.features = ["read:activation_token"]
+    userInputValues.features = ["read:activation_token"];
   }
 }
 
@@ -223,12 +223,37 @@ async function hashPasswordInObject(userInputValues) {
   userInputValues.password = hashedPassword;
 }
 
+async function setFeatures(userId, features) {
+  const updatedUser = await runUpdateQuery(userId, features);
+  return updatedUser;
+
+  async function runUpdateQuery(userId, features) {
+    const results = await database.query({
+      text: `
+       UPDATE
+         users
+       SET
+         features = $2,
+         updated_at = timezone('utc', now())
+       WHERE
+         id = $1
+       RETURNING
+         *
+       ;`,
+      values: [userId, features],
+    });
+
+    return results.rows[0];
+  }
+}
+
 const user = {
   create,
   findOneByUsername,
   findOneById,
   findOneByEmail,
   update,
+  setFeatures,
 };
 
 export default user;

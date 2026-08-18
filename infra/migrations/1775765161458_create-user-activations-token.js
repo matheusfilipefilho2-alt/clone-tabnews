@@ -1,5 +1,5 @@
 exports.up = (pgm) => {
-  pgm.createTable("user_activations_tokens", {
+  pgm.createTable("user_activation_tokens", {
     id: {
       type: "uuid",
       primaryKey: true, // define a coluna como identificador principal da tabela
@@ -7,8 +7,8 @@ exports.up = (pgm) => {
     },
 
     used_at: {
-        type: "timestamptz",
-        notNull: false,
+      type: "timestamptz",
+      notNull: false,
     },
 
     user_id: {
