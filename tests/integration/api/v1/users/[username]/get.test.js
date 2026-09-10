@@ -1,5 +1,6 @@
 import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/orchestrator.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -7,71 +8,67 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/users/username", () => {
+describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
     test("With exact case match", async () => {
       await orchestrator.createUser({
         username: "MesmoCase",
-        email: "mesmo.case@matheus.com",
-        password: "1234",
       });
 
-      const response2 = await fetch(
-        "http://localhost:3000/api/v1/users/MesmoCase"
+      const response = await fetch(
+        `${webserver.origin}/api/v1/users/MesmoCase`
       );
 
-      expect(response2.status).toBe(200);
+      expect(response.status).toBe(200);
 
-      const response2Body = await response2.json();
+      const responseBody = await response.json();
 
-      expect(response2Body).toEqual({
-        id: response2Body.id,
+      expect(responseBody).toEqual({
+        id: responseBody.id,
         username: "MesmoCase",
-        email: "mesmo.case@matheus.com",
-        password: response2Body.password,
+        email: responseBody.email,
+        password: responseBody.password,
         features: ["read:activation_token"],
-        created_at: response2Body.created_at,
-        updated_at: response2Body.created_at,
+        created_at: responseBody.created_at,
+        updated_at: responseBody.updated_at,
       });
 
-      expect(uuidVersion(response2Body.id)).toBe(4);
-      expect(Date.parse(response2Body.created_at)).not.toBeNaN();
-      expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
     });
 
     test("With case mismatch", async () => {
       await orchestrator.createUser({
         username: "CaseDiferente",
-        email: "case.diferente@matheus.com",
-        password: "1234",
       });
 
-      const response2 = await fetch(
-        "http://localhost:3000/api/v1/users/casediferente"
+      const response = await fetch(
+        `${webserver.origin}/api/v1/users/casediferente`
       );
 
-      expect(response2.status).toBe(200);
+      expect(response.status).toBe(200);
 
-      const response2Body = await response2.json();
+      const responseBody = await response.json();
 
-      expect(response2Body).toEqual({
-        id: response2Body.id,
+      expect(responseBody).toEqual({
+        id: responseBody.id,
         username: "CaseDiferente",
-        email: "case.diferente@matheus.com",
-        password: response2Body.password,
+        email: responseBody.email,
+        password: responseBody.password,
         features: ["read:activation_token"],
-        created_at: response2Body.created_at,
-        updated_at: response2Body.created_at,
+        created_at: responseBody.created_at,
+        updated_at: responseBody.updated_at,
       });
 
-      expect(uuidVersion(response2Body.id)).toBe(4);
-      expect(Date.parse(response2Body.created_at)).not.toBeNaN();
-      expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
     });
 
     test("With nonexistent username", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/UsuarioInexistente"
+        `${webserver.origin}/api/v1/users/UsuarioInexistente`
       );
 
       expect(response.status).toBe(404);

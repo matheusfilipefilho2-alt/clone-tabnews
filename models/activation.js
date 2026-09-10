@@ -29,11 +29,11 @@ async function findOneValidById(tokenId) {
       values: [tokenId],
     });
 
-    if (results.rowsCount === 0) {
+    if (results.rowCount === 0) {
       throw new NotFoundError({
         message:
-          "O token de ativação utilazando não foi encontrado no sistema ou expirou.",
-        action: "faça um novo cadastro.",
+          "O token de ativação utilizado não foi encontrado no sistema ou expirou.",
+        action: "Faça um novo cadastro.",
       });
     }
 
@@ -125,6 +125,7 @@ const activation = {
   markTokenAsUsed,
   activateUserByUserId,
   SendEmailToUser,
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default activation;
