@@ -46,8 +46,8 @@ async function gethandler(request, response) {
   const secureOutputValues = authorization.filterOutput(
     userTryingToGet,
     "read:status",
-    statusObject,
-  )
+    statusObject
+  );
 
-  response.status(200).json(secureOutputValues)
+  response.status(200).json(secureOutputValues);
 }

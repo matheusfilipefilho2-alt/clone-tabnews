@@ -27,6 +27,7 @@ const availableFeatures = [
 function can(user, feature, resource) {
   validateUser(user);
   validateFeature(feature);
+
   let authorized = false;
   if (user.features.includes(feature)) {
     authorized = true;
@@ -52,6 +53,15 @@ function validateFeature(feature) {
   }
 }
 
+function validateResource(resource) {
+  if (!resource) {
+    throw new InternalServerError({
+      cause:
+        "É necessário fornecer uma `feature` conhecida no model `authorization.filterOutput()`.",
+    });
+  }
+}
+
 function validateUser(user) {
   if (!user || !user.features) {
     throw new InternalServerError({
@@ -61,6 +71,10 @@ function validateUser(user) {
 }
 
 function filterOutput(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+  validateResource(resource);
+
   if (feature === "read:user") {
     return {
       id: resource.id,
@@ -122,7 +136,7 @@ function filterOutput(user, feature, resource) {
       output.dependencies.database.version =
         resource.dependencies.database.version;
     }
-    
+
     return output;
   }
 }
