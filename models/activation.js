@@ -108,7 +108,7 @@ async function activateUserByUserId(userId) {
 
 async function SendEmailToUser(user, activationToken) {
   await email.send({
-    from: "TabNews <contato@tabnews.com.br>",
+    from: "TabNews <contato@matheusin.com.br>",
     to: user.email,
     subject: "Ative seu cadastro no TabNews",
     text: `${user.username} clique no link abaixo para ativar seu cadastro no TabNews
