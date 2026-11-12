@@ -52,7 +52,7 @@ async function create(userId) {
             ($1, $2, $3)
           RETURNING
             *    
-        `,
+        ;`,
       values: [token, userId, expiresAt],
     });
 
